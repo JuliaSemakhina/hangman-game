@@ -5,6 +5,7 @@ import WrongLetters from './components/WrongLetters'
 import Word from './components/Word'
 import Popup from './components/Popup'
 import Notification from './components/Notification'
+import { showNotification as show } from './helpers/Helpers'
 
 import './App.css';
 
@@ -30,13 +31,13 @@ function App() {
       if(!correctLetters.includes(letter)) {
         setCorrectLetters(currentLetters => [...currentLetters, letter]);
       } else {
-        // showNotification();
+        show(setShowNotification);
       }
     } else {
       if(!wrongLetters.includes(letter)){
         setWrongLetters(wrongLetters => [...wrongLetters, letter]);
       } else {
-        // showNotification();
+        show(setShowNotification);
       }
     }
 
@@ -47,6 +48,16 @@ function App() {
   return ()=> window.removeEventListener('keydown', handleKeydown)
   }, [correctLetters, wrongLetters, playable]);
 
+  function playAgain(){
+
+    setPlayable(true);
+    setCorrectLetters([]);
+    setWrongLetters([]);
+
+    const random = Math.floor(Math.random() * words.length);
+    selectedWord = words[random];
+  }
+
 
   return (
     <>
@@ -56,6 +67,8 @@ function App() {
     <WrongLetters wrongLetters={wrongLetters}/>
     <Word selectedWord={selectedWord} correctLetters={correctLetters}/>
     </div>
+    <Popup correctLetters={correctLetters} wrongLetters={wrongLetters} selectedWord={selectedWord} setPlayable={setPlayable} playAgain={playAgain}/>
+    <Notification showNotification={showNotification}/>
     </>
     );
 }
